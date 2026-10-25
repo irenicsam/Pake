@@ -186,7 +186,7 @@ jobs:
           INPUT_MULTI_ARCH: ${{ inputs.multi_arch }}
           INPUT_TARGETS: ${{ inputs.targets }}
         run: |
-          $args = $env:INPUT_URL, "--name", $env:INPUT_NAME--inject cleaner.js
+          $args = $env:INPUT_URL, "--name", $env:INPUT_NAME
 
           # Empty environment variables are unset on Windows, so test for null too.
           if (-not [string]::IsNullOrEmpty($env:INPUT_ICON)) {

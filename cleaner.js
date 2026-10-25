@@ -3,7 +3,7 @@
   let scrollTimeout;
 
   function purgeOffscreenMedia() {
-    const videos = document.querySelectorAll('video');
+    const videos = document.querySelectorAll("video");
     videos.forEach((v) => {
       try {
         const rect = v.getBoundingClientRect();
@@ -14,7 +14,7 @@
           }
           // Reset buffer
           if (v.src || v.srcObject) {
-            v.removeAttribute('src');
+            v.removeAttribute("src");
             v.srcObject = null;
             v.load();
           }
@@ -26,11 +26,11 @@
   }
 
   window.addEventListener(
-    'scroll',
+    "scroll",
     () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(purgeOffscreenMedia, 300);
     },
-    { passive: true }
+    { passive: true },
   );
 })();

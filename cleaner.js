@@ -1,22 +1,36 @@
-// Automatically unloads off-screen video stream buffers as you scroll
-window.addEventListener(
-  "scroll",
-  () => {
-    const videos = document.querySelectorAll("video");
+// cleaner.js - Periodically purges off-screen video buffer memory
+(function () {
+  let scrollTimeout;
+
+  function purgeOffscreenMedia() {
+    const videos = document.querySelectorAll('video');
     videos.forEach((v) => {
-      const rect = v.getBoundingClientRect();
-      // If the video scrolled far above or below the visible window
-      if (rect.bottom < -1200 || rect.top > window.innerHeight + 1200) {
-        if (!v.paused) {
-          v.pause();
+      try {
+        const rect = v.getBoundingClientRect();
+        // Check if the video is far out of the visible screen area
+        if (rect.bottom < -1000 || rect.top > window.innerHeight + 1000) {
+          if (!v.paused) {
+            v.pause();
+          }
+          // Reset buffer
+          if (v.src || v.srcObject) {
+            v.removeAttribute('src');
+            v.srcObject = null;
+            v.load();
+          }
         }
-        // Drop buffered frames to release memory back to WebView2
-        if (v.src) {
-          v.removeAttribute("src");
-          v.load();
-        }
+      } catch (err) {
+        // Silently skip if Instagram's player locks an element
       }
     });
-  },
-  { passive: true },
-);
+  }
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(purgeOffscreenMedia, 300);
+    },
+    { passive: true }
+  );
+})();
